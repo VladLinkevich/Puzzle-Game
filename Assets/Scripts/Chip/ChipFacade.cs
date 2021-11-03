@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Logic;
+using UnityEngine;
 
 namespace Chip
 {

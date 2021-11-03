@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using Chip;
 using Data;
 using Factory;
 using Point;
-using Unity.Mathematics;
+using RoundState;
 using UnityEngine;
 using Zenject;
 
@@ -13,18 +13,25 @@ namespace Logic
   public class CreateMap : IInitializable
   {
     private readonly IMapFactory _mapFactory;
+    private readonly RoundStateMachine _stateMachine;
+
+    public event Action Create;
     
     private MapData _mapData;
     private List<PointFacade> _points;
+    private List<ChipFacade> _chips;
 
-    public CreateMap(IMapFactory mapFactory)
-    {
+    public CreateMap(IMapFactory mapFactory) => 
       _mapFactory = mapFactory;
-
-    }
 
     public void Initialize() => 
       CreateBoard();
+
+    public List<PointFacade> GetPoints() => 
+      _points;
+
+    public List<ChipFacade> GetChips() =>
+      _chips;
 
     private void CreateBoard()
     {
@@ -32,6 +39,7 @@ namespace Logic
       CreatePoints();
       SetNeighbors();
       CreateChips();
+      Create?.Invoke();
     }
 
     private void CreatePoints()
@@ -58,11 +66,13 @@ namespace Logic
 
     private void CreateChips()
     {
+      _chips = new List<ChipFacade>(_mapData.ChipSpawnPoints.Length);
+      
       for (int i = 0, end = _mapData.ChipSpawnPoints.Length; i < end; ++i)
       {
         int point = _mapData.ChipSpawnPoints[i];
-
         ChipFacade chip = _mapFactory.CreateChip(_points[point].transform.position);
+        _chips.Add(chip);
         _points[point].SetChip(chip);
       }
     }
