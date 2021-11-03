@@ -1,4 +1,6 @@
-﻿using Data;
+﻿using Chip;
+using Data;
+using Point;
 using UnityEngine;
 
 namespace Factory
@@ -7,19 +9,34 @@ namespace Factory
   {
     private const string ParentName = "Map";
 
+    private Object[] _chips;
     private GameObject _parent;
+    private int _chipId;
 
     public MapFactory()
     {
       CreateParent();
+      LoadChips();
     }
 
-    public GameObject CreatePoint(Vector2 at) => 
-      (GameObject) Object.Instantiate(
+    public PointFacade CreatePoint(Vector2 at) => 
+      ((GameObject) Object.Instantiate(
         Resources.Load(ResourcePath.PointPrefab), 
         at,
         Quaternion.identity,
-        _parent.transform);
+        _parent.transform)).GetComponent<PointFacade>();
+
+    public ChipFacade CreateChip(Vector3 at)
+    {
+      GameObject chip =
+        (GameObject) Object.Instantiate(_chips[_chipId], at, Quaternion.identity, _parent.transform);
+
+      ChipFacade facade = chip.GetComponent<ChipFacade>();
+      facade.SetId(_chipId);
+      _chipId++;
+
+      return facade;
+    }
 
     public void CreateTransition(Vector2 from, Vector2 to)
     {
@@ -40,22 +57,13 @@ namespace Factory
         Vector2.Angle(@from.x > to.x ? to - @from : @from - to, Vector2.up));
     }
 
-    private float GetAngle(float x, float distance)
-    {
-      float radian = Mathf.Sin(x /distance);
-      return radian * Mathf.Rad2Deg;
-    }
-
     private void CreateParent()
     {
       _parent = (GameObject) Object.Instantiate(Resources.Load(ResourcePath.EmptyPrefab));
       _parent.name = ParentName;
     }
-  }
 
-  public interface IMapFactory
-  {
-    GameObject CreatePoint(Vector2 at);
-    void CreateTransition(Vector2 from, Vector2 to);
+    private void LoadChips() => 
+      _chips = Resources.LoadAll(ResourcePath.ChipsPrefab);
   }
 }

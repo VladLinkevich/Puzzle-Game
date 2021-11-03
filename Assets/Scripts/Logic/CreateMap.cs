@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Chip;
 using Data;
 using Factory;
-using Points;
+using Point;
 using Unity.Mathematics;
 using UnityEngine;
 using Zenject;
@@ -13,11 +15,12 @@ namespace Logic
     private readonly IMapFactory _mapFactory;
     
     private MapData _mapData;
-    private List<Point> _points;
+    private List<PointFacade> _points;
 
     public CreateMap(IMapFactory mapFactory)
     {
       _mapFactory = mapFactory;
+
     }
 
     public void Initialize() => 
@@ -28,14 +31,23 @@ namespace Logic
       _mapData = GetMapData();
       CreatePoints();
       SetNeighbors();
+      CreateChips();
+    }
+
+    private void CreatePoints()
+    {
+      _points = new List<PointFacade>(_mapData.SpawnPoints.Length);
+      
+      for (int i = 0, end = _mapData.SpawnPoints.Length; i < end; ++i)
+        _points.Add(_mapFactory.CreatePoint(_mapData.SpawnPoints[i]));
     }
 
     private void SetNeighbors()
     {
       for (int i = 0, end = _mapData.Neighbors.Length; i < end; ++i)
       {
-        Point first = _points[_mapData.Neighbors[i].From];
-        Point second = _points[_mapData.Neighbors[i].To];
+        PointFacade first = _points[_mapData.Neighbors[i].From];
+        PointFacade second = _points[_mapData.Neighbors[i].To];
         
         _mapFactory.CreateTransition(first.transform.position, second.transform.position);
         
@@ -44,12 +56,15 @@ namespace Logic
       }
     }
 
-    private void CreatePoints()
+    private void CreateChips()
     {
-      _points = new List<Point>(_mapData.SpawnPoints.Length);
-      
-      for (int i = 0, end = _mapData.SpawnPoints.Length; i < end; ++i)
-        _points.Add(_mapFactory.CreatePoint(_mapData.SpawnPoints[i]).GetComponent<Point>());
+      for (int i = 0, end = _mapData.ChipSpawnPoints.Length; i < end; ++i)
+      {
+        int point = _mapData.ChipSpawnPoints[i];
+
+        ChipFacade chip = _mapFactory.CreateChip(_points[point].transform.position);
+        _points[point].SetChip(chip);
+      }
     }
 
     private MapData GetMapData() => 
