@@ -6,5 +6,6 @@ namespace Data
   public class MapData : ScriptableObject
   {
     public Vector2[] SpawnPoints;
+    public Neighbor[] Neighbors;
   }
 }

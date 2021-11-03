@@ -26,6 +26,19 @@ namespace Logic
     {
       _mapData = GetMapData();
       CreatePoints();
+      SetNeighbors();
+    }
+
+    private void SetNeighbors()
+    {
+      for (int i = 0, end = _mapData.Neighbors.Length; i < end; ++i)
+      {
+        _mapFactory.CreateTransition(
+          _points[_mapData.Neighbors[i].From].transform.position,
+          _points[_mapData.Neighbors[i].To].transform.position);
+        
+        
+      }
     }
 
     private void CreatePoints()
