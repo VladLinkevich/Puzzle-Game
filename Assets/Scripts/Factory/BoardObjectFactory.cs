@@ -5,19 +5,15 @@ using UnityEngine;
 
 namespace Factory
 {
-  public class MapFactory : IMapFactory
+  public class BoardObjectFactory : IBoardObjectFactory
   {
     private const string ParentName = "Map";
 
     private Object[] _chips;
     private GameObject _parent;
-    private int _chipId;
 
-    public MapFactory()
-    {
-      CreateParent();
+    public BoardObjectFactory() => 
       LoadChips();
-    }
 
     public PointFacade CreatePoint(Vector2 at) => 
       ((GameObject) Object.Instantiate(
@@ -26,14 +22,13 @@ namespace Factory
         Quaternion.identity,
         _parent.transform)).GetComponent<PointFacade>();
 
-    public ChipFacade CreateChip(Vector3 at)
+    public ChipFacade CreateChip(Vector3 at, int id)
     {
       GameObject chip =
-        (GameObject) Object.Instantiate(_chips[_chipId], at, Quaternion.identity, _parent.transform);
+        (GameObject) Object.Instantiate(_chips[id], at, Quaternion.identity, _parent.transform);
 
       ChipFacade facade = chip.GetComponent<ChipFacade>();
-      facade.SetId(_chipId);
-      _chipId++;
+      facade.SetId(id);
 
       return facade;
     }
@@ -57,11 +52,8 @@ namespace Factory
         Vector2.Angle(@from.x > to.x ? to - @from : @from - to, Vector2.up));
     }
 
-    private void CreateParent()
-    {
+    public GameObject CreateParent() =>
       _parent = (GameObject) Object.Instantiate(Resources.Load(ResourcePath.EmptyPrefab));
-      _parent.name = ParentName;
-    }
 
     private void LoadChips() => 
       _chips = Resources.LoadAll(ResourcePath.ChipsPrefab);

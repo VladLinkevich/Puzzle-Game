@@ -2,12 +2,10 @@
 
 namespace Data
 {
-  [CreateAssetMenu(fileName = "MapData", menuName = "Data/Map", order = 0)]
-  public class MapData : ScriptableObject
+  public class CreateBoardData
   {
     public Vector2[] SpawnPoints;
     public Neighbor[] Neighbors;
     public int[] ChipSpawnPoints;
-    public int[] ChipEndPoints;
   }
 }

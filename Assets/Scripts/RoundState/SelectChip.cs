@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Chip;
+using Data;
 using Logic;
 using TurnStateMachine;
 using UnityEngine;
@@ -10,28 +11,25 @@ namespace RoundState
   public class SelectChip
   {
     private readonly SelectPoint _selectPoint;
-    private readonly CreateMap _map;
+    private readonly BoardFactory _boardFactory;
     private readonly MovePointAnimation _animation;
 
-    private List<Chip.TouchObserver> _chips;
-
+    private BoardData _data;
     private ChipFacade _currentChip;
+    private List<TouchObserver> _chips;
 
-    public SelectChip(SelectPoint selectPoint, CreateMap map, MovePointAnimation animation)
+    public SelectChip(SelectPoint selectPoint, MovePointAnimation animation)
     {
-      _selectPoint = selectPoint;
-      _map = map;
-      _animation = animation;
 
-      _map.Create += OnCreate;
-      _animation.StartAnimation += BlockMove;
-      _animation.EndAnimation += ReleaseMove;
+      _selectPoint = selectPoint;
+      _animation = animation;
     }
 
-    private void OnCreate()
+    public void Construct(BoardData data)
     {
-      _map.Create -= OnCreate;
-      
+      _data = data;
+      _animation.StartAnimation += BlockMove;
+      _animation.EndAnimation += ReleaseMove;
       GetChips();
       SubscribeOnChipClick();
     }
@@ -70,7 +68,7 @@ namespace RoundState
 
     private void GetChips()
     {
-      List<ChipFacade> chips = _map.GetChips();
+      List<ChipFacade> chips = _data.Chips;
       _chips = new List<TouchObserver>(chips.Count);
 
       for (int i = 0, end = chips.Count; i < end; ++i)

@@ -1,29 +1,32 @@
 ﻿using System.Collections.Generic;
 using Chip;
+using Data;
 using Logic;
 using Point;
 
 namespace RoundState
 {
-  public class SelectPoint 
+  public class SelectPoint
   {
-    private readonly CreateMap _map;
+    private readonly BoardFactory _boardFactory;
     private readonly MovePointAnimation _movePoint;
 
-    private List<PointFacade> _point;
-
+    private BoardData _data;
     private List<PointFacade> _activePoint;
     private PointFacade _currentPoint;
     private bool _isSubscribeOnTouch;
     
-    public SelectPoint(CreateMap map, MovePointAnimation movePoint)
+    public SelectPoint(MovePointAnimation movePoint)
     {
-      _map = map;
       _movePoint = movePoint;
-
-      _map.Create += OnCreate;
     }
 
+    public void Construct(BoardData data)
+    {
+      _data = data;
+      _activePoint = new List<PointFacade>(_data.Points.Count);
+    }
+    
     public void CalculatePath(ChipFacade chip)
     {
       PointFacade point = GetCurrentPoint(chip);
@@ -43,13 +46,6 @@ namespace RoundState
       foreach (PointFacade p in neighbors)
         if (IsMovablePoint(p))
           ActivatePoint(p);
-    }
-
-    private void OnCreate()
-    {
-      _map.Create -= OnCreate;
-
-      GetPoints();
     }
 
     private void TouchPoint(PointFacade point)
@@ -73,12 +69,6 @@ namespace RoundState
         point.GetComponentInChildren<Point.TouchObserver>().Click -= TouchPoint;
     }
 
-    private void GetPoints()
-    { 
-      _point = _map.GetPoints();
-      _activePoint = new List<PointFacade>(_point.Count);
-    }
-
     private void DeactivateAndUnsubscribePoints()
     {
       UnsubscribeOnPointTouch();
@@ -96,7 +86,7 @@ namespace RoundState
     }
 
     private PointFacade GetCurrentPoint(ChipFacade chip) => 
-      _point.Find(x => x.GetChip() == chip);
+     _data.Points.Find(x => x.GetChip() == chip);
 
     private static bool IsMovablePoint(PointFacade p) => 
       p.IsActive == false && p.GetChip() == null;

@@ -32,3 +32,4 @@ MonoBehaviour:
   - From: 4
     To: 3
   ChipSpawnPoints: 000000000100000002000000
+  ChipEndPoints: 020000000100000000000000
