@@ -12,8 +12,7 @@ namespace Installer
     {
       Container.Bind<IMapFactory>().To<MapFactory>().AsSingle().NonLazy();
       Container.BindInterfacesAndSelfTo<CreateMap>().AsSingle().NonLazy();
-
-      Container.BindInterfacesAndSelfTo<RoundStateMachine>().AsSingle().NonLazy();
+      
       Container.Bind<SelectChip>().AsSingle().NonLazy();
       Container.Bind<SelectPoint>().AsSingle().NonLazy();
     }

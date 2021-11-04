@@ -19,8 +19,7 @@ namespace RoundState
     {
       _states = new Dictionary<System.Type, IRoundState>
       {
-        [typeof(SelectChip)] = chip,
-        [typeof(SelectPoint)] = point,
+
       };
     }
 

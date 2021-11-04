@@ -1,17 +1,12 @@
-﻿using UnityEngine;
+﻿using Chip;
 
-namespace TurnStateMachine
+namespace RoundState
 {
-  public class SelectPoint : IRoundState
+  public class SelectPoint 
   {
-    public void Enter()
+    public void CalculatePath(ChipFacade chip)
     {
-      Debug.Log("enter Select point");
-    }
-
-    public void Exit()
-    {
-      throw new System.NotImplementedException();
+      
     }
   }
 }

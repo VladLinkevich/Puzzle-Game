@@ -3,44 +3,33 @@ using Chip;
 using Logic;
 using TurnStateMachine;
 using UnityEngine;
+using Zenject;
 
 namespace RoundState
 {
-  public class SelectChip : IRoundState
+  public class SelectChip
   {
-    private readonly RoundStateMachine _stateMachine;
+    private readonly SelectPoint _selectPoint;
     private readonly CreateMap _map;
+    
     private List<Chip.TouchObserver> _chips;
 
-    public SelectChip(RoundStateMachine stateMachine,
-      CreateMap map)
+    private ChipFacade _currentChip;
+
+    public SelectChip(SelectPoint selectPoint, CreateMap map)
     {
-      _stateMachine = stateMachine;
+      _selectPoint = selectPoint;
       _map = map;
       
       _map.Create += OnCreate;
     }
 
-    public void Enter()
-    {
-      Debug.Log("Enter Select Chip");
-      SubscribeOnChipClick();
-    }
-
-    public void Exit() => 
-      UnsubscribeOnChipClick();
-
     private void OnCreate()
     {
       _map.Create -= OnCreate;
       
-      List<ChipFacade> chips = _map.GetChips();
-      _chips = new List<TouchObserver>(chips.Count);
-
-      for (int i = 0, end = chips.Count; i < end; ++i)
-        _chips.Add(chips[i].GetComponentInChildren<Chip.TouchObserver>());
-
-      _stateMachine.ChangeState<SelectChip>();
+      GetChips();
+      SubscribeOnChipClick();
     }
 
     private void SubscribeOnChipClick()
@@ -57,8 +46,21 @@ namespace RoundState
 
     private void TouchChip(ChipFacade chip)
     {
-      _stateMachine.SelectChip = chip;
-      _stateMachine.ChangeState<SelectPoint>();
+      if (_currentChip != null)
+        _currentChip.Deactivate();
+
+      _currentChip = chip;
+      _currentChip.Activate();
+      _selectPoint.CalculatePath(chip);
+    }
+
+    private void GetChips()
+    {
+      List<ChipFacade> chips = _map.GetChips();
+      _chips = new List<TouchObserver>(chips.Count);
+
+      for (int i = 0, end = chips.Count; i < end; ++i)
+        _chips.Add(chips[i].GetComponentInChildren<Chip.TouchObserver>());
     }
   }
 }

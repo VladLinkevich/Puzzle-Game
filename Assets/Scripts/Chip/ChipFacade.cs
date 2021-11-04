@@ -12,5 +12,15 @@ namespace Chip
 
     public void SetId(int id) => 
       _id = id;
+
+    public void Deactivate()
+    {
+      
+    }
+
+    public void Activate()
+    {
+      
+    }
   }
 }
