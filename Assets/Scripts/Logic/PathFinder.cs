@@ -15,7 +15,6 @@ namespace Logic
     {
       _minDistance = Int32.MaxValue;
       FindPathMinDistance(new List<PointFacade>(), from, to, 0);
-      Debug.Log(_minDistance);
       _minPath = FindPath(new List<PointFacade>(), from, to, _minDistance);
       return _minPath;
     }

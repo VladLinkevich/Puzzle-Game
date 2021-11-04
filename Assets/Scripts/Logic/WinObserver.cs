@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Chip;
 using Data;
 using Point;
 using RoundState;
 using Unity.VisualScripting;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Type = Chip.Type;
 
 namespace Logic
 {
   public class WinObserver : IBoardDataReader
   {
+    public event Action Win; 
+    
     private readonly MovePointAnimation _move;
     private readonly ResourceLoader _loader;
 
@@ -24,7 +29,7 @@ namespace Logic
 
       _move.EndAnimation += CheckWin;
     }
-
+    
     public void Construct(BoardData data)
     {
       _boardData = data;
@@ -62,7 +67,7 @@ namespace Logic
         if (CheckChip(i))
           return;
 
-      Debug.Log("win");
+      Win?.Invoke();
     }
 
     private bool CheckChip(int i) =>
