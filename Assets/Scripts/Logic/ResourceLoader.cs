@@ -14,28 +14,16 @@ namespace Logic
     public Object[] LoadChips() => 
       _chips ??= Resources.LoadAll(ResourcePath.ChipsPrefab);
 
-    public GameObject LoadPoint()
-    {
+    public GameObject LoadPoint() => 
       _point ??= (GameObject) Resources.Load(ResourcePath.PointPrefab);
-      return _point;
-    }
 
-    public GameObject LoadTransition()
-    {
+    public GameObject LoadTransition() => 
       _transition ??= (GameObject) Resources.Load(ResourcePath.TransitionPrefab);
-      return _transition;
-    }
 
-    public GameObject LoadEmpty()
-    {
+    public GameObject LoadEmpty() => 
       _empty ??= (GameObject)Resources.Load(ResourcePath.EmptyPrefab);
-      return _empty;
-    }
 
-    public MapData LoadMapData()
-    {
-      _mapData ??= Resources.Load<MapData>(ResourcePath.MapDataPath);
-      return _mapData;
-    }
+    public MapData LoadMapData() => 
+      _mapData ??= Resources.Load<MapData>(PlayerPrefs.GetString(ResourcePath.MapDataPref));
   }
 }

@@ -11,6 +11,7 @@ namespace Logic
     private const string ExampleParentName = "Example";
     private Vector3 ExampleTransformPosition = new Vector3(-7f, -3f, 0f);
     private Vector3 ExampleTransformLocalScale = new Vector3(0.5f, 0.5f, 0.5f);
+    private Vector3 GameTransformLocalScale = new Vector3(2f, 2f, 2f);
     
     private readonly BoardFactory _factory;
     private readonly IBoardDataReader[] _boardDataReaders;
@@ -44,6 +45,7 @@ namespace Logic
       });
 
       boardData.Parent.name = GameParentName;
+      boardData.Parent.transform.localScale = GameTransformLocalScale;
       
       return boardData;
     }

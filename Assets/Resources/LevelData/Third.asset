@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 207750fa71f140078233063a22510c01, type: 3}
-  m_Name: MapData
+  m_Name: Third
   m_EditorClassIdentifier: 
   SpawnPoints:
   - {x: 0, y: 0}

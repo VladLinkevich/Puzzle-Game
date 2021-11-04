@@ -28,7 +28,6 @@ namespace Logic
     public void Construct(BoardData data)
     {
       _boardData = data;
-
       
       GetPayloadData();
     }

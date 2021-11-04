@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207750fa71f140078233063a22510c01, type: 3}
+  m_Name: Second
+  m_EditorClassIdentifier: 
+  SpawnPoints:
+  - {x: 0, y: 0}
+  - {x: -1, y: 1}
+  - {x: 1, y: 1}
+  - {x: 2, y: 0}
+  - {x: 1, y: -1}
+  - {x: -1, y: -1}
+  - {x: -2, y: 0}
+  Neighbors:
+  - From: 0
+    To: 1
+  - From: 0
+    To: 2
+  - From: 0
+    To: 3
+  - From: 0
+    To: 4
+  - From: 0
+    To: 5
+  - From: 0
+    To: 6
+  - From: 1
+    To: 2
+  - From: 2
+    To: 3
+  - From: 3
+    To: 4
+  - From: 4
+    To: 5
+  - From: 5
+    To: 6
+  - From: 1
+    To: 6
+  ChipSpawnPoints: 01000000020000000400000005000000
+  ChipEndPoints: 05000000040000000200000001000000
