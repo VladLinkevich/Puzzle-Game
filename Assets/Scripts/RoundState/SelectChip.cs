@@ -11,17 +11,21 @@ namespace RoundState
   {
     private readonly SelectPoint _selectPoint;
     private readonly CreateMap _map;
-    
+    private readonly MovePointAnimation _animation;
+
     private List<Chip.TouchObserver> _chips;
 
     private ChipFacade _currentChip;
 
-    public SelectChip(SelectPoint selectPoint, CreateMap map)
+    public SelectChip(SelectPoint selectPoint, CreateMap map, MovePointAnimation animation)
     {
       _selectPoint = selectPoint;
       _map = map;
-      
+      _animation = animation;
+
       _map.Create += OnCreate;
+      _animation.StartAnimation += UnsubscribeOnChipClick;
+      _animation.EndAnimation += SubscribeOnChipClick;
     }
 
     private void OnCreate()

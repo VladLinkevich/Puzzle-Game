@@ -2,34 +2,38 @@
 using Chip;
 using Logic;
 using Point;
-using UnityEngine;
 
 namespace RoundState
 {
   public class SelectPoint 
   {
     private readonly CreateMap _map;
-    
+    private readonly MovePointAnimation _movePoint;
+
     private List<PointFacade> _point;
-    private List<Point.TouchObserver> _pointTouchObserver;
 
     private List<PointFacade> _activePoint;
     private PointFacade _currentPoint;
     private bool _isSubscribeOnTouch;
     
-    public SelectPoint(CreateMap map)
+    public SelectPoint(CreateMap map, MovePointAnimation movePoint)
     {
       _map = map;
-      
+      _movePoint = movePoint;
+
       _map.Create += OnCreate;
     }
 
     public void CalculatePath(ChipFacade chip)
     {
-      DeactivatePoints();
-      SubscribeOnPointTouch();
-      GetCurrentPoint(chip);
+      PointFacade point = GetCurrentPoint(chip);
+      if (_currentPoint == point) 
+        return;
+
+      _currentPoint = point;
+      DeactivateAndUnsubscribePoints();
       CheckNeighborPointOnActive(_currentPoint);
+      SubscribeOnPointTouch();
     }
 
     private void CheckNeighborPointOnActive(PointFacade point)
@@ -50,33 +54,38 @@ namespace RoundState
 
     private void TouchPoint(PointFacade point)
     {
-      Debug.Log("Touch point");
+      if (point.IsActive == false)
+        return;
+      
+      _movePoint.MoveChip(_currentPoint, point);
+      DeactivateAndUnsubscribePoints();
     }
 
     private void SubscribeOnPointTouch()
     {
-      if (_isSubscribeOnTouch == true)
-        return;
+      foreach (PointFacade point in _activePoint)
+        point.GetComponentInChildren<Point.TouchObserver>().Click += TouchPoint;
+    }
 
-      _isSubscribeOnTouch = true;
-      foreach (Point.TouchObserver touchObserver in _pointTouchObserver) 
-        touchObserver.Click += TouchPoint;
+    private void UnsubscribeOnPointTouch()
+    {
+      foreach (PointFacade point in _activePoint)
+        point.GetComponentInChildren<Point.TouchObserver>().Click -= TouchPoint;
     }
 
     private void GetPoints()
     { 
       _point = _map.GetPoints();
       _activePoint = new List<PointFacade>(_point.Count);
-      _pointTouchObserver = new List<Point.TouchObserver>(_point.Count);
-
-      for (int i = 0, end = _point.Count; i < end; ++i)
-        _pointTouchObserver.Add(_point[i].GetComponentInChildren<Point.TouchObserver>());
     }
 
-    private void DeactivatePoints()
+    private void DeactivateAndUnsubscribePoints()
     {
+      UnsubscribeOnPointTouch();
       foreach (PointFacade point in _activePoint) 
         point.Deactivate();
+      
+      _activePoint.Clear();
     }
 
     private void ActivatePoint(PointFacade p)
@@ -86,8 +95,8 @@ namespace RoundState
       CheckNeighborPointOnActive(p);
     }
 
-    private void GetCurrentPoint(ChipFacade chip) => 
-      _currentPoint = _point.Find(x => x.GetChip() == chip);
+    private PointFacade GetCurrentPoint(ChipFacade chip) => 
+      _point.Find(x => x.GetChip() == chip);
 
     private static bool IsMovablePoint(PointFacade p) => 
       p.IsActive == false && p.GetChip() == null;
