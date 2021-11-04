@@ -24,8 +24,8 @@ namespace RoundState
       _animation = animation;
 
       _map.Create += OnCreate;
-      _animation.StartAnimation += UnsubscribeOnChipClick;
-      _animation.EndAnimation += SubscribeOnChipClick;
+      _animation.StartAnimation += BlockMove;
+      _animation.EndAnimation += ReleaseMove;
     }
 
     private void OnCreate()
@@ -47,6 +47,16 @@ namespace RoundState
       foreach (Chip.TouchObserver chip in _chips) 
         chip.Click -= TouchChip;
     }
+
+    private void BlockMove()
+    {
+      _currentChip.Deactivate();
+      _currentChip = null;
+      UnsubscribeOnChipClick();
+    }
+
+    private void ReleaseMove() => 
+      SubscribeOnChipClick();
 
     private void TouchChip(ChipFacade chip)
     {

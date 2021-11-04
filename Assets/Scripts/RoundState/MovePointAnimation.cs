@@ -26,20 +26,29 @@ namespace RoundState
     {
       StartAnimation?.Invoke();
       _minPath = _pathFinder.FindMinPath(from, to);
-
-      Sequence sequence = DOTween.Sequence();
       ChipFacade chip = from.GetChip();
-      foreach (PointFacade point in _minPath)
-        sequence.Append(chip.transform.DOMove(point.transform.position, Duration));
       
-      ChangeChipHandler(from, to);
-      sequence.OnComplete(() => EndAnimation?.Invoke());
+      Sequence sequence = CreateAnimation(chip);
+      OnEndAnimation(from, to, sequence, chip);
     }
 
-    private void ChangeChipHandler(PointFacade from, PointFacade to)
+    private Sequence CreateAnimation(ChipFacade chip)
     {
-      to.SetChip(from.GetChip());
+      Sequence sequence = DOTween.Sequence();
+      foreach (PointFacade point in _minPath)
+        sequence.Append(chip.transform.DOMove(point.transform.position, Duration));
+      return sequence;
+    }
+    
+    private void OnEndAnimation(PointFacade from, PointFacade to, Sequence sequence, ChipFacade chip)
+    {
       from.SetChip(null);
+
+      sequence.OnComplete(() =>
+      {
+        to.SetChip(chip);
+        EndAnimation?.Invoke();
+      });
     }
   }
 }

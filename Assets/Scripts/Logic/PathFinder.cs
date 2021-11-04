@@ -19,22 +19,22 @@ namespace Logic
 
     private void FindPath(List<PointFacade> path, PointFacade from, PointFacade to, int distance)
     {
+      path.Add(from);
+      
       if (from == to)
       {
+        path.RemoveAt(0);
         _minPath = path;
         return;
       }
       
-      if (distance == 0)
+      if (distance <= 0)
         return;
       
       List<PointFacade> neighbors = from.GetNeighbors();
       foreach (PointFacade neighbor in neighbors)
         if (neighbor.IsActive)
-        {
-          path.Add(neighbor);
           FindPath(new List<PointFacade>(path), neighbor, to, distance - 1);
-        }
     }
 
     private void FindPathMinDistance(PointFacade from, PointFacade to, int minDistance)

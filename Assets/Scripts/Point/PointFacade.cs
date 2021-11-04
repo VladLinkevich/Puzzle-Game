@@ -6,6 +6,7 @@ namespace Point
 {
   public class PointFacade : MonoBehaviour
   {
+    public GameObject Body;
     public GameObject ActiveFX;
     
     private List<PointFacade> _neighbors = new List<PointFacade>();
@@ -16,7 +17,12 @@ namespace Point
     public List<PointFacade> GetNeighbors() => _neighbors;
     public void SetNeighbors(PointFacade neighbor) => _neighbors.Add(neighbor);
     public ChipFacade GetChip() => _chip;
-    public void SetChip(ChipFacade chip) => _chip = chip;
+    
+    public void SetChip(ChipFacade chip)
+    {
+      _chip = chip;
+      Body.SetActive(_chip == null);
+    }
 
     public void Activate()
     {
