@@ -1,5 +1,6 @@
 ﻿using Chip;
 using Data;
+using Logic;
 using Point;
 using UnityEngine;
 
@@ -7,17 +8,17 @@ namespace Factory
 {
   public class BoardObjectFactory : IBoardObjectFactory
   {
-    private const string ParentName = "Map";
-
-    private Object[] _chips;
+    private readonly ResourceLoader _loader;
     private GameObject _parent;
 
-    public BoardObjectFactory() => 
-      LoadChips();
-
+    public BoardObjectFactory(ResourceLoader loader)
+    {
+      _loader = loader;
+    }
+      
     public PointFacade CreatePoint(Vector2 at) => 
       ((GameObject) Object.Instantiate(
-        Resources.Load(ResourcePath.PointPrefab), 
+        _loader.LoadPoint(), 
         at,
         Quaternion.identity,
         _parent.transform)).GetComponent<PointFacade>();
@@ -25,7 +26,7 @@ namespace Factory
     public ChipFacade CreateChip(Vector3 at, int id)
     {
       GameObject chip =
-        (GameObject) Object.Instantiate(_chips[id], at, Quaternion.identity, _parent.transform);
+        (GameObject) Object.Instantiate(_loader.LoadChips()[id], at, Quaternion.identity, _parent.transform);
 
       ChipFacade facade = chip.GetComponent<ChipFacade>();
       facade.SetId(id);
@@ -36,7 +37,7 @@ namespace Factory
     public void CreateTransition(Vector2 from, Vector2 to)
     {
       GameObject transition = (GameObject) Object.Instantiate(
-        Resources.Load(ResourcePath.TransitionPrefab),
+        _loader.LoadTransition(),
         _parent.transform);
 
       SetTransitionTransform(@from, to, transition);
@@ -53,9 +54,6 @@ namespace Factory
     }
 
     public GameObject CreateParent() =>
-      _parent = (GameObject) Object.Instantiate(Resources.Load(ResourcePath.EmptyPrefab));
-
-    private void LoadChips() => 
-      _chips = Resources.LoadAll(ResourcePath.ChipsPrefab);
+      _parent = (GameObject) Object.Instantiate(_loader.LoadEmpty());
   }
 }

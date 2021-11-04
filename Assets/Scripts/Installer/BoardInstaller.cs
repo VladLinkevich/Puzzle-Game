@@ -14,9 +14,11 @@ namespace Installer
       Container.Bind<IBoardObjectFactory>().To<BoardObjectFactory>().AsSingle();
       Container.Bind<BoardFactory>().AsSingle().NonLazy();
       Container.Bind<PathFinder>().AsSingle();
+      Container.Bind<ResourceLoader>().AsSingle();
       Container.Bind<MovePointAnimation>().AsSingle();
-      Container.Bind<SelectPoint>().AsSingle();
-      Container.Bind<SelectChip>().AsSingle();
+      Container.BindInterfacesAndSelfTo<SelectPoint>().AsSingle();
+      Container.BindInterfacesAndSelfTo<SelectChip>().AsSingle();
+      Container.BindInterfacesAndSelfTo<WinObserver>().AsSingle();
       Container.BindInterfacesAndSelfTo<GameBootstrapper>().AsSingle();
     }
   }

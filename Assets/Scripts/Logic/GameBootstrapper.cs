@@ -13,25 +13,25 @@ namespace Logic
     private Vector3 ExampleTransformLocalScale = new Vector3(0.5f, 0.5f, 0.5f);
     
     private readonly BoardFactory _factory;
-    private readonly SelectChip _selectChip;
-    private readonly SelectPoint _selectPoint;
+    private readonly IBoardDataReader[] _boardDataReaders;
+    private readonly ResourceLoader _loader;
 
-    public GameBootstrapper(BoardFactory factory, SelectChip selectChip, SelectPoint selectPoint)
+    public GameBootstrapper(BoardFactory factory, IBoardDataReader[] boardDataReaders, ResourceLoader loader)
     {
       _factory = factory;
-      _selectChip = selectChip;
-      _selectPoint = selectPoint;
+      _boardDataReaders = boardDataReaders;
+      _loader = loader;
     }
 
     public void Initialize()
     {
-      MapData mapData = Resources.Load<MapData>(ResourcePath.MapDataPath);
+      MapData mapData = _loader.LoadMapData();
 
       BoardData boardData = CreatePlayBoard(mapData);
       CreateExampleBoard(mapData);
-      
-      _selectChip.Construct(boardData);
-      _selectPoint.Construct(boardData);
+
+      foreach (IBoardDataReader reader in _boardDataReaders) 
+        reader.Construct(boardData);
     }
 
     private BoardData CreatePlayBoard(MapData mapData)

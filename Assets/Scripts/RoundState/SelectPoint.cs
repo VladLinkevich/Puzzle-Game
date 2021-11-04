@@ -6,7 +6,7 @@ using Point;
 
 namespace RoundState
 {
-  public class SelectPoint
+  public class SelectPoint : IBoardDataReader
   {
     private readonly BoardFactory _boardFactory;
     private readonly MovePointAnimation _movePoint;

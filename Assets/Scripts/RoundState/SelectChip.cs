@@ -8,7 +8,7 @@ using Zenject;
 
 namespace RoundState
 {
-  public class SelectChip
+  public class SelectChip : IBoardDataReader
   {
     private readonly SelectPoint _selectPoint;
     private readonly BoardFactory _boardFactory;
