@@ -1,57 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Point;
+using UnityEngine;
 
 namespace Logic
 {
   public class PathFinder
   {
-    private List<PointFacade> _minPath;
     private int _minDistance;
+    private  List<PointFacade> _minPath;
     
     public List<PointFacade> FindMinPath(PointFacade from, PointFacade to)
     {
       _minDistance = Int32.MaxValue;
-      FindPathMinDistance(from, to, 0);
-      FindPath(new List<PointFacade>(_minDistance), from, to, _minDistance);
+      FindPathMinDistance(new List<PointFacade>(), from, to, 0);
+      Debug.Log(_minDistance);
+      _minPath = FindPath(new List<PointFacade>(), from, to, _minDistance);
       return _minPath;
     }
 
-    private void FindPath(List<PointFacade> path, PointFacade from, PointFacade to, int distance)
+    private List<PointFacade> FindPath(List<PointFacade> path, PointFacade from, PointFacade to, int distance)
     {
-      path.Add(from);
-      
       if (from == to)
       {
+        path.Add(from);
         path.RemoveAt(0);
-        _minPath = path;
-        return;
+        return path;
       }
-      
+
       if (distance <= 0)
-        return;
+        return null;
       
       List<PointFacade> neighbors = from.GetNeighbors();
       foreach (PointFacade neighbor in neighbors)
-        if (neighbor.IsActive)
-          FindPath(new List<PointFacade>(path), neighbor, to, distance - 1);
+        if (neighbor.IsActive &&
+            !path.Contains(neighbor))
+        {
+          path.Add(from);
+          if (FindPath(path, neighbor, to, distance - 1) == null)
+            path.Remove(from);
+          else
+            return path;
+        }
+
+      return null;
     }
 
-    private void FindPathMinDistance(PointFacade from, PointFacade to, int minDistance)
+    private void FindPathMinDistance(List<PointFacade> path, PointFacade @from, PointFacade to, int minDistance)
     {
-      if (_minDistance <= minDistance)
-        return;
-      
-      if (from == to)
+      if (from == to &&
+          _minDistance != minDistance)
       {
         _minDistance = minDistance;
         return;
       }
+      
+      if (_minDistance <= minDistance)
+        return;
 
       List<PointFacade> neighbors = from.GetNeighbors();
       foreach (PointFacade neighbor in neighbors)
-        if (neighbor.IsActive)
-          FindPathMinDistance(neighbor, to, minDistance + 1);
+        if (neighbor.IsActive &&
+            !path.Contains(neighbor))
+        {
+          path.Add(from);
+          FindPathMinDistance(path, neighbor, to, minDistance + 1);
+          path.Remove(from);
+        }
     }
   }
 }

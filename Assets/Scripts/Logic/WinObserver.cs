@@ -45,7 +45,7 @@ namespace Logic
       _chipsType = new List<Chip.Type>(chipEndPoints.Length);
 
       for (int i = 0, end = chipEndPoints.Length; i < end; ++i) 
-        _chipsType.Add(chips[chipEndPoints[i]].GetComponent<ChipFacade>().Type);
+        _chipsType.Add(chips[i].GetComponent<ChipFacade>().Type);
     }
 
     private void GetPayloadPoint(int[] chipEndPoints)
@@ -53,7 +53,7 @@ namespace Logic
       _payloadPoint = new List<PointFacade>(chipEndPoints.Length);
 
       for (int i = 0, end = chipEndPoints.Length; i < end; ++i) 
-        _payloadPoint.Add(_boardData.Points[i]);
+        _payloadPoint.Add(_boardData.Points[chipEndPoints[i]]);
     }
 
     private void CheckWin()
