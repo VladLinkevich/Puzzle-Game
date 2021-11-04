@@ -15,8 +15,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Chip
+  - Point
   - 
   - 
   - 
@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Point
+    uniqueID: 1642619159
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

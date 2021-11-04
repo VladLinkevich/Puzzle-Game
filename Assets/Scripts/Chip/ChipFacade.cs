@@ -6,6 +6,7 @@ namespace Chip
 {
   public class ChipFacade : MonoBehaviour
   {
+    public GameObject ActiveFX;
     public Type Type;
 
     private int _id;
@@ -13,14 +14,10 @@ namespace Chip
     public void SetId(int id) => 
       _id = id;
 
-    public void Deactivate()
-    {
-      
-    }
+    public void Deactivate() => 
+      ActiveFX.SetActive(false);
 
-    public void Activate()
-    {
-      
-    }
+    public void Activate() => 
+      ActiveFX.SetActive(true);
   }
 }
